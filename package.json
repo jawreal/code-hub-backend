@@ -1,0 +1,46 @@
+{
+  "name": "code-hub-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec ts-node ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jawreal/code-hub-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jawreal/code-hub-backend/issues"
+  },
+  "homepage": "https://github.com/jawreal/code-hub-backend#readme",
+  "description": "",
+  "dependencies": {
+    "-": "^0.0.1",
+    "cors": "^2.8.5",
+    "D": "^1.0.0",
+    "dotenv": "^16.5.0",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.15.1",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.2",
+    "@types/express-session": "^1.18.1",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^22.15.29",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
+    "nodemon": "^3.1.10"
+  }
+}
