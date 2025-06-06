@@ -25,6 +25,7 @@
     "dotenv": "^16.5.0",
     "express-session": "^1.18.1",
     "mongoose": "^8.15.1",
+    "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
@@ -38,8 +39,11 @@
     "@types/express": "^5.0.2",
     "@types/express-session": "^1.18.1",
     "@types/mongoose": "^5.11.96",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.15.29",
     "@types/passport": "^1.0.17",
+    "@types/passport-github2": "^1.2.9",
+    "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-local": "^1.0.38",
     "nodemon": "^3.1.10"
   }
