@@ -2,6 +2,8 @@ import passport from 'passport';
 import { Profile as GoogleProfile, Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubSrategy, Profile as GithubProfile} from 'passport-github2';
+import { comparePassword } from './encrypt.pass'
+import User from '../models/user.auth.model'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -21,6 +23,24 @@ passport.use(new GithubSrategy({
   callbackURL: process.env.GITHUB_CALLBACK_URL || '', 
 }, (accessToken: string, refreshToken: string, profile: GithubProfile, done: Done) => {
   return done(null, profile)
+}));
+
+passport.use(new LocalStrategy({
+  usernameField: "email", 
+  passwordField: "password" 
+}, async (email: string, password: string, done: Done) => {
+  try {
+    const user = await User.findOne({ email: email });
+    if(!user) throw new Error();
+    const isCorrect = await comparePassword(password, user.password);
+    if(isCorrect && email === user.email){
+      done(null, user);
+    }else{
+      done(null, false)
+    }
+  }catch(error){
+    done(error);
+  }
 }));
 
 
