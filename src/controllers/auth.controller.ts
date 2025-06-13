@@ -8,7 +8,8 @@ export const checkAuth = (req: Request, res: Response) => {
     res.json({ authenticated: false });
     return //always add return if you have a response below
   }
-  res.json({ authenticated: true });
+  const image = (req.user as any)?.photos[0]?.value;
+  res.json({ authenticated: true, image: image });
 };
 
 export const signin = (req: Request, res: Response) => {
