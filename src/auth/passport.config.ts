@@ -4,6 +4,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubSrategy, Profile as GithubProfile} from 'passport-github2';
 import { comparePassword } from './encrypt.pass'
 import User from '../models/user.auth.model'
+import UserInfo from '../models/userinfo.model'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,9 +14,23 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID || '',
   clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
   callbackURL: process.env.GOOGLE_CALLBACK_URL || '',
-}, (accessToken: string, refreshToken: string, profile: GoogleProfile, done: Done) => {
-  console.log(profile)
-  return done(null, profile);
+}, async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: Done) => {
+  try{
+    const result = await UserInfo.findOneAndUpdate({ email: profile!.emails![0].value },
+    {
+      $setOnInsert: {
+        name: profile!.displayName,
+        email: profile!.emails![0].value,
+        profile_img: profile!.photos![0].value
+      }
+    },
+    { new: true, upsert: true });
+    console.log(result)
+    if(!result) throw new Error();
+    return done(null, result); 
+  }catch(err){
+    done(err)
+  }
 }));
 
 passport.use(new GithubSrategy({
@@ -23,6 +38,7 @@ passport.use(new GithubSrategy({
   clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
   callbackURL: process.env.GITHUB_CALLBACK_URL || '', 
 }, (accessToken: string, refreshToken: string, profile: GithubProfile, done: Done) => {
+  console.log(profile)
   return done(null, profile)
 }));
 
