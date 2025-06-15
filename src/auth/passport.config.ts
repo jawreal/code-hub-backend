@@ -4,7 +4,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubSrategy, Profile as GithubProfile} from 'passport-github2';
 import { comparePassword } from './encrypt.pass'
 import User from '../models/user.auth.model'
-import UserInfo from '../models/userinfo.model'
+import UserInfo from '../models/user.info.model'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -22,6 +22,9 @@ passport.use(new GoogleStrategy({
         name: profile!.displayName,
         email: profile!.emails![0].value,
         profile_img: profile!.photos![0].value
+      }, 
+      $set: {
+        lastSignin: Date.now() //always set new signin date
       }
     },
     { new: true, upsert: true });
@@ -37,9 +40,25 @@ passport.use(new GithubSrategy({
   clientID: process.env.GITHUB_CLIENT_ID || '',
   clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
   callbackURL: process.env.GITHUB_CALLBACK_URL || '', 
-}, (accessToken: string, refreshToken: string, profile: GithubProfile, done: Done) => {
-  console.log(profile)
-  return done(null, profile)
+}, async (accessToken: string, refreshToken: string, profile: GithubProfile, done: Done) => {
+  try{
+    const result = await UserInfo.findOneAndUpdate({ username: profile!.username },
+     {
+      $setOnInsert: {
+        name: profile!.displayName,
+        username: profile!.username, 
+        profile_img: profile!.photos![0].value
+      }, 
+      $set: {
+        lastSignin: Date.now() //always set new signin date
+      }
+    },
+    { new: true, upsert: true });
+    if(!result) throw new Error();
+    return done(null, result) 
+  }catch(err){
+    done(err);
+  }
 }));
 
 passport.use(new LocalStrategy({

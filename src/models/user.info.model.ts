@@ -14,7 +14,7 @@ interface IUserInfo extends Document {
 
 const userInfoSchema = new Schema<IUserInfo>({
   displayName: String, 
-  email: String, 
+  email: { type:  String, default: "Not specified" }, 
   username: { type: String, unique: true, default: () => `username${crypto.randomBytes(4).toString('hex')}`},
   profile_img: { type: String, default: '' }, 
   totalQuestions: { type: Number, default: 0 },

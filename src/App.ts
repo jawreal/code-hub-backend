@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import session from 'express-session';
 import cors from 'cors';
 import authRouter from './routers/auth.router';
+import apiRouter from './routers/api.router';
 import mongoose from 'mongoose';
 import errorHandler from './middleware/error.handler'
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(passport.initialize()); //initialize the passport with express
 app.use(passport.session()); //allow passport to work with express-session and should be after express-session
 mongoose.connect(MONGO_URI).then(() => console.log("Connected on mongodb atlas")).catch((err) => console.error("Error on connecting in mongodb atlas", err));
 app.use('/auth', authRouter);
+app.use('/api', apiRouter);
 app.use(errorHandler);//always last
 
 

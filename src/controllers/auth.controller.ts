@@ -3,14 +3,18 @@ import passport from 'passport';
 import dotenv from 'dotenv';
 dotenv.config();
 
+interface CustomData extends Request {
+  username?: string;
+  profile_img?: string;
+}
+
 export const checkAuth = (req: Request, res: Response) => {
   if(!req.isAuthenticated()){
     res.json({ authenticated: false });
     return //always add return if you have a response below
   }
-  const image = (req.user as any)!.profile_img;
-  console.log(image)
-  res.json({ authenticated: true, image: image });
+  const { profile_img, username } = (req.user as CustomData);
+  res.json({ authenticated: true, image: profile_img, username: username });
 };
 
 export const signin = (req: Request, res: Response) => {
