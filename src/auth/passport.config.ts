@@ -5,6 +5,7 @@ import { Strategy as GithubSrategy, Profile as GithubProfile} from 'passport-git
 import { comparePassword } from './encrypt.pass'
 import User from '../models/user.auth.model'
 import UserInfo from '../models/user.info.model'
+import { updateUserInfo } from '../helpers/userinfo.helpers'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,23 +17,11 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK_URL || '',
 }, async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: Done) => {
   try{
-    const result = await UserInfo.findOneAndUpdate({ email: profile!.emails![0].value },
-    {
-      $setOnInsert: {
-        name: profile!.displayName,
-        email: profile!.emails![0].value,
-        profile_img: profile!.photos![0].value
-      }, 
-      $set: {
-        lastSignin: Date.now() //always set new signin date
-      }
-    },
-    { new: true, upsert: true });
-    console.log(result)
-    if(!result) throw new Error();
-    return done(null, result); 
+    const data = await updateUserInfo(profile);
+    if(!data) throw new Error();
+    return done(null, data) 
   }catch(err){
-    done(err)
+    done(err);
   }
 }));
 
@@ -42,20 +31,9 @@ passport.use(new GithubSrategy({
   callbackURL: process.env.GITHUB_CALLBACK_URL || '', 
 }, async (accessToken: string, refreshToken: string, profile: GithubProfile, done: Done) => {
   try{
-    const result = await UserInfo.findOneAndUpdate({ username: profile!.username },
-     {
-      $setOnInsert: {
-        name: profile!.displayName,
-        username: profile!.username, 
-        profile_img: profile!.photos![0].value
-      }, 
-      $set: {
-        lastSignin: Date.now() //always set new signin date
-      }
-    },
-    { new: true, upsert: true });
-    if(!result) throw new Error();
-    return done(null, result) 
+    const data = await updateUserInfo(profile);
+    if(!data) throw new Error();
+    return done(null, data) 
   }catch(err){
     done(err);
   }

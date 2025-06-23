@@ -1,7 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import UserInfo from '../models/user.info.model';
 
-export const getInfo = (req: Request, res: Response) => {
-  console.log(req.params.username)
-  res.status(200).json({ message: "Testing"})
+export const getInfo = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const result = await UserInfo.findOne({ username: req.params?.username });
+    if (!result) throw new Error();
+    res.status(200).json(result);
+  }catch(err){
+    next(err);
+  }
 };
