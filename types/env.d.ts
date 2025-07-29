@@ -10,6 +10,6 @@ declare namespace NodeJS {
     readonly GITHUB_CLIENT_ID?: string;
     readonly GITHUB_CLIENT_SECRET?: string;
     readonly GITHUB_CALLBACK_URL?: string;
-    //readonly NODE_ENV?: 'development' | 'production';
+    readonly NODE_ENV?: 'development' | 'production';
   }
 }

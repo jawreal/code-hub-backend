@@ -7,6 +7,7 @@ interface IUserInfo extends Document {
   email: string;
   username: string | (() => string);
   profile_img: string;
+  address: string;
   totalQuestions: number;
   totalChallenges: number;
   totalAnswers: number;
@@ -18,6 +19,7 @@ const userInfoSchema = new Schema<IUserInfo>({
   email: { type:  String, default: "Not specified" }, 
   username: { type: String, unique: true, default: () => `username${crypto.randomBytes(4).toString('hex')}`},
   profile_img: { type: String, default: '' }, 
+  address: { type: String, default: 'no adress specified' }, 
   totalQuestions: { type: Number, default: 0 },
   totalChallenges:  { type: Number, default: 0 }, 
   totalAnswers:  { type: Number, default: 0 }, 

@@ -2,7 +2,6 @@ import passport from 'passport';
 import { Profile as GoogleProfile, Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GithubSrategy, Profile as GithubProfile} from 'passport-github2';
-import { comparePassword } from './encrypt.pass'
 import User from '../models/user.auth.model'
 import UserInfo from '../models/user.info.model'
 import { updateUserInfo } from '../helpers/userinfo.helpers'
@@ -46,8 +45,8 @@ passport.use(new LocalStrategy({
   try {
     const user = await User.findOne({ email: email });
     if(!user) throw new Error();
-    const isCorrect = await comparePassword(password, user.password);
-    if(isCorrect && email === user.email){
+    const isCorrect = await user.validateCredentials(password, email);
+    if(isCorrect){
       done(null, user);
     }else{
       done(null, false)
