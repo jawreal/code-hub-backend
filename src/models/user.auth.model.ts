@@ -18,7 +18,7 @@ const userSchema = new Schema<IUser>({
 userSchema.methods.validateCredentials = async function (plainPassword: string, usernameInput: string): Promise<boolean> {
   const result = await bcrypt.compare(plainPassword, this.password);
   return result && usernameInput === this.username;
-}
+};
 
 const User = model<IUser>('User', userSchema);
 
