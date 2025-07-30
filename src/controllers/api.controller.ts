@@ -10,3 +10,8 @@ export const getInfo = async (req: Request, res: Response, next: NextFunction) =
     next(err);
   }
 };
+
+
+export const uploadPost = (req: Request, res: Response) => {
+  console.log(req.body);
+};
