@@ -1,6 +1,8 @@
 import { Schema, Types, model } from 'mongoose';
 
 interface IPost {
+  username: string;
+  profile_img: string;
   post_type: string;
   title: string;
   body: string;
@@ -13,6 +15,8 @@ interface ITags extends Pick<IPost, 'user'> {
 }
 
 const postSchema = new Schema<IPost>({
+  username: String, 
+  profile_img: String, 
   post_type: String, 
   title: String, 
   body: String, 
