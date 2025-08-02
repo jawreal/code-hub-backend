@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import UserInfo from '../models/user.info.model';
 import { Post, Tag } from '../models/user.post.model';
 
@@ -30,6 +31,23 @@ export const uploadPost = async (req: Request, res: Response, next: NextFunction
       const post = new Post({ ...otherData, username: user.username, profile_img: user.profile_img, user: user._id, tags: tagIds });
       await post.save();
       res.status(200).json({ message: 'Post has been posted!' });
+     }
+  } catch (err) {
+     next(err);
+  }
+};
+
+export const viewPost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+   const { postId } = req.params;
+   const parsedId = new Types.ObjectId(postId);
+   if (postId) {
+      const result = await Post.findOne({_id: parsedId }).populate("tags", "name");
+      if(result){
+        res.status(200).json(result);
+        return 
+      }
+      res.status(404).json({ message: "Post not found"});
      }
   } catch (err) {
      next(err);
