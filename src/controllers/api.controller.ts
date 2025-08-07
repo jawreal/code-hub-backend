@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import UserInfo from '../models/user.info.model';
-import { Post, Tag } from '../models/user.post.model';
+import { Post, Tag, Comment } from '../models/user.post.model';
 
 interface ExtendUser extends Request {
   username?: string;
@@ -37,12 +37,25 @@ export const uploadPost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
+
+export const sendComment = async (req: Request, res: Response, next: NextFunction) => {
+  try{
+    const { postId, ...otherData } = req.body;
+    const comment = new Comment(otherData);
+    await comment.save();
+    await Post.updateOne({ _id: postId }, { $addToSet: { comments: comment._id }});
+    res.status(200).json({ message: "Comment has submitted!"});
+  }catch(err){
+    next(err)
+  }
+};
+
 export const viewPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
    const { postId } = req.params;
    const parsedId = new Types.ObjectId(postId);
    if (postId) {
-      const result = await Post.findOne({_id: parsedId }).populate("tags", "name");
+      const result = await Post.findOne({_id: parsedId }).populate('tags', 'name').populate('comments');
       if(result){
         res.status(200).json(result);
         return 
@@ -57,7 +70,9 @@ export const viewPost = async (req: Request, res: Response, next: NextFunction) 
 
 export const getPost = async (req: Request, res: Response, next: NextFunction) => {
   try{
-    const result = await Post.find().populate('tags', 'name');
+    const result = await Post.find().populate('tags', 'name').populate('comments');
+    //await Post.deleteMany({});
+    //await Tag.deleteMany({});
     res.status(200).json(result);
   }catch(err){
     next(err)
